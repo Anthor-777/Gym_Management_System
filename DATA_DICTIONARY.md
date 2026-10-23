@@ -153,7 +153,7 @@ The backend should branch on `MYSQL_ERRNO`, never on message text. SQLSTATE is `
 | 45006 | `45006 trainer slot already taken` | 409 | Trainer already has a session at that time |
 | 45007 | `45007 duplicate booking` | 409 | Booking is already Booked or Attended |
 | 45008 | `45008 duplicate email or phone` | 409 | Member email or phone is already registered |
-| 45009 | `45009 record not found` | 404 | Requested plan, subscription, trainer, session, booking, or equipment is missing |
+| 45009 | `45009 <record> not found` (e.g. `45009 plan not found`) | 404 | Requested plan, subscription, trainer, session, booking, or equipment is missing |
 | 45010 | `45010 invalid state or invalid input` | 400 | Input is invalid or operation is not allowed from current state |
 | 45011 | `45011 no open visit to check out` | 409 | No open visit exists for checkout today |
 

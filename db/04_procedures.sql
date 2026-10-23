@@ -105,7 +105,8 @@ BEGIN
   SELECT COUNT(*) INTO v_count FROM attendance WHERE member_id=p_member_id AND visit_date=CURRENT_DATE AND check_out IS NULL;
   IF v_count=0 THEN SIGNAL SQLSTATE '45000' SET MYSQL_ERRNO=45011,MESSAGE_TEXT='45011 no open visit to check out'; END IF;
   SELECT att_id INTO v_id FROM attendance WHERE member_id=p_member_id AND visit_date=CURRENT_DATE AND check_out IS NULL ORDER BY att_id DESC LIMIT 1 FOR UPDATE;
-  UPDATE attendance SET check_out=CURRENT_TIME WHERE att_id=v_id; COMMIT;
+  -- CURRENT_TIME has 1-second precision; if checkout lands in the same second as check-in, bump by 1s so chk_attendance_checkout (check_out > check_in) holds.
+  UPDATE attendance SET check_out=IF(CURRENT_TIME>check_in,CURRENT_TIME,ADDTIME(check_in,'00:00:01')) WHERE att_id=v_id; COMMIT;
   SELECT * FROM attendance WHERE att_id=v_id;
 END$$
 
