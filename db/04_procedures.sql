@@ -93,7 +93,7 @@ BEGIN
   IF NOT EXISTS(SELECT 1 FROM subscription WHERE member_id=p_member_id AND status='Active' AND start_date<=CURRENT_DATE AND end_date>=CURRENT_DATE) THEN
     SIGNAL SQLSTATE '45000' SET MYSQL_ERRNO=45004,MESSAGE_TEXT='45004 no active subscription covering date'; END IF;
   IF EXISTS(SELECT 1 FROM attendance WHERE member_id=p_member_id AND visit_date=CURRENT_DATE AND check_out IS NULL) THEN
-    SIGNAL SQLSTATE '45000' SET MYSQL_ERRNO=45005,MESSAGE_TEXT='45005 already checked in today'; END IF;
+    SIGNAL SQLSTATE '45000' SET MYSQL_ERRNO=45005,MESSAGE_TEXT='45005 member already checked in today'; END IF;
   INSERT INTO attendance(member_id,visit_date,check_in) VALUES(p_member_id,CURRENT_DATE,CURRENT_TIME);
   SET v_id=LAST_INSERT_ID(); COMMIT; SELECT * FROM attendance WHERE att_id=v_id;
 END$$

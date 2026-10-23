@@ -69,6 +69,7 @@ const [rows] = await connection.execute(
 - Route business writes through the stored procedures. The app account has the requested table DML grants, so direct table writes can bypass workflow rules beyond the trigger safety checks.
 - Plans allow a zero fee, while payment amounts must be positive. A zero-fee plan therefore needs a separate complimentary activation policy if the gym intends to offer one.
 - Stored `Active` status can be stale if the scheduled event does not run. Views and API examples expose `effective_status`, computed as `Expired` for a stored-Active row whose end date has passed.
+- A `Pending` subscription that has partial payments is never auto-cancelled (only unpaid ones are), and it keeps blocking overlapping date ranges for that member. Staff should either collect the balance or call `sp_cancel_subscription`.
 - Booking status uniqueness is one row per member/session. A cancelled or no-show booking is reactivated in place and receives a new `booked_at` value.
 - Session capacity and session duration are not in the ER model and are not enforced. Consider adding them if the business defines those rules.
 - The ER model has no user authentication table. Add authentication, credential storage, and authorization as a separate design before exposing account login.

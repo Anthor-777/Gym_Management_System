@@ -62,6 +62,8 @@ CREATE TABLE IF NOT EXISTS subscription (
   KEY ix_subscription_member_status (member_id, status),
   -- Serves expiration and upcoming renewal queries.
   KEY ix_subscription_end_date (end_date),
+  -- Serves status filters combined with date ranges (active count, expiring soon, expiry job).
+  KEY ix_subscription_status_end (status, end_date),
   -- Serves subscription lookup by plan.
   KEY ix_subscription_plan (plan_id),
   CONSTRAINT chk_subscription_dates CHECK (end_date > start_date),
@@ -95,6 +97,8 @@ CREATE TABLE IF NOT EXISTS attendance (
   updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   -- Serves a member's attendance history and date-range summaries.
   KEY ix_attendance_member_date (member_id, visit_date),
+  -- Serves today's attendance view and dashboard visit counts (filter by date alone).
+  KEY ix_attendance_visit_date (visit_date),
   CONSTRAINT chk_attendance_checkout CHECK (check_out IS NULL OR check_out > check_in),
   CONSTRAINT fk_attendance_member FOREIGN KEY (member_id) REFERENCES member(member_id) ON UPDATE CASCADE ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

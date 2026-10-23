@@ -3,7 +3,7 @@ USE gym_management;
 CREATE OR REPLACE VIEW v_member_current_subscription AS
 SELECT m.member_id, m.name AS member_name, s.sub_id, s.plan_id, mp.plan_name,
        s.start_date, s.end_date,
-       CASE WHEN s.end_date IS NULL THEN NULL ELSE GREATEST(DATEDIFF(s.end_date,CURRENT_DATE),0) END AS days_remaining,
+       CASE WHEN s.sub_id IS NULL THEN NULL WHEN s.status='Active' THEN GREATEST(DATEDIFF(s.end_date,CURRENT_DATE),0) ELSE 0 END AS days_remaining,
        s.status,
        CASE WHEN s.status='Active' AND s.end_date<CURRENT_DATE THEN 'Expired' ELSE s.status END AS effective_status
 FROM member m
